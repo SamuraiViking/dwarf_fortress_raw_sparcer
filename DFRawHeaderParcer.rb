@@ -7,7 +7,8 @@ class DFRawHeaderParcer
   # reads all headers
   # inserts super classes in hash as keys
   # inserts sub classes into hash as value to associated super class key
-  def all_headers_hash(file)
+  def all_headers_hash(file_name)
+    file = File.open("raw/objects/#{file_name}.txt", 'r')
     all_objects_hash = {}
 
     file.each do |line|
@@ -76,12 +77,7 @@ class DFRawHeaderParcer
   end
 end
 
-file_name = 'creature_other'
-path = 'raw/objects/'
-
-file = File.open("#{path}#{file_name}.txt", 'r')
-
 DF_raw_header_parcer = DFRawHeaderParcer.new
 
-puts DF_raw_header_parcer.all_headers_str(file)
-puts DF_raw_header_parcer.all_headers_hash(file)
+puts DF_raw_header_parcer.all_headers_str('creature_tropical_new')
+puts DF_raw_header_parcer.all_headers_hash('creature_tropical_new')
