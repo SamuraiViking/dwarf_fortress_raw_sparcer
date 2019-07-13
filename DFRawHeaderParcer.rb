@@ -16,10 +16,10 @@ class DFRawHeaderParcer < DFRawParcerUtil
     file.each do |line|
       next unless header?(line)
 
-      header = parse_header(line)
-      sub_class = header[:sub_class]
-      super_class = header[:super_class]
+      header = parse_line(line)
+      super_class = header[:first_value]
       super_class = super_class.to_sym
+      sub_class = header[:second_value]
 
       if all_objects_hash.key?(super_class)
         all_objects_hash[super_class] << sub_class
@@ -28,27 +28,6 @@ class DFRawHeaderParcer < DFRawParcerUtil
       end
     end
     all_objects_hash
-  end
-
-  # parses [super_class:sub_class] to
-  #
-  # {
-  #   super_class: 'super_class'
-  #   sub_class: 'sub_class'
-  # }
-  def parse_header(line)
-    header = {
-      super_class: '',
-      sub_class: ''
-    }
-
-    super_class = line.match(/\[(\w+)/)[1]
-    sub_class = line.match(/(\w+)\]/)[1]
-
-    header[:super_class] = super_class
-    header[:sub_class] = sub_class
-
-    header
   end
 
   # prints { super_object1: ['sub_object1','sub_object2], super_object2: ... } as
