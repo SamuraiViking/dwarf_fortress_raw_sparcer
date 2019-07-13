@@ -10,10 +10,13 @@ class DFRawParser < DFRawParcerUtil
     @json = init_json
   end
 
+  def valid_line?(line)
+    !line.nil? && !empty_line?(line) && attribute?(line)
+  end
+
   def init_json(line_num = 0)
     line = @file_lines[line_num]
-    return init_json(line_num + 1) if empty_line?(line)
-    return init_json(line_num + 1) unless attribute?(line)
+    return init_json(line_num + 1) unless valid_line?(line)
 
     parsed_line = parse_line(line)
     key = parsed_line[:key].to_sym
@@ -27,6 +30,6 @@ class DFRawParser < DFRawParcerUtil
   end
 end
 
-body_default = DFRawParser.new('raw/objects/body_default.txt')
+body_default = DFRawParser.new('raw/objects/body_rcp.txt')
 
-p body_default.json
+puts body_default.json
