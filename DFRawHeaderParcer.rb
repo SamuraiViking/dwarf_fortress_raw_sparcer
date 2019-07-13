@@ -1,9 +1,11 @@
+require_relative 'DFRawParcerUtil'
+
 # functions:
 #   all_headers
 #   header?
 #   parse_header
 #   display_header
-class DFRawHeaderParcer
+class DFRawHeaderParcer < DFRawParcerUtil
   # reads all headers
   # inserts super classes in hash as keys
   # inserts sub classes into hash as value to associated super class key
@@ -26,11 +28,6 @@ class DFRawHeaderParcer
       end
     end
     all_objects_hash
-  end
-
-  # header format is [super_class:sub_class]
-  def header?(line)
-    line.match(/^\[\w+:\w+\]/)
   end
 
   # parses [super_class:sub_class] to
@@ -63,8 +60,8 @@ class DFRawHeaderParcer
   # super_object2
   #   sub_object1
   #   sub_object2
-  def all_headers_str(file)
-    all_headers_h = all_headers_hash(file)
+  def all_headers_str(file_name)
+    all_headers_h = all_headers_hash(file_name)
     all_headers_s = ''
     all_headers_h.each do |super_class, sub_objects|
       all_headers_s += "#{super_class.to_s}\n"
