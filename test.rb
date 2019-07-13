@@ -28,12 +28,17 @@ class Parser
     key = parsed_line[:key]
     value = parsed_line[:value]
 
-    return key if @index == @file_length - 1
+    return { "#{key}": value } if @index == @file_length - 1
+
+    key = key.to_sym
+    value = value.to_sym
 
     file_hash = {}
     file_hash[key] = { "#{value}": parse_file(@file[@index += 1]) }
-    p file_hash
+    file_hash
   end
 end
 
-puts Parser.new.parse_file("test.txt")
+h = Parser.new.parse_file("test.txt")
+
+p h
