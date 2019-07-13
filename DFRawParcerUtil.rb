@@ -1,5 +1,4 @@
 class DFRawParcerUtil
-
   # header format is [super_class:sub_class]
   def header?(line)
     line.match(/^\[\w+:\w+\]/)
@@ -7,6 +6,18 @@ class DFRawParcerUtil
 
   def empty_line?(line)
     !line.match(/\S/)
+  end
+
+  def attribute?(line)
+    line.match(/\[\w+:\w+\]/)
+  end
+
+  def attribute_include?(line, text)
+    line.match(/\[\w+:#{text}\]/)
+  end
+
+  def starting_spaces_count(line)
+    line.match(/^(\s+)/)[1].length
   end
 
   # parses [first_value:second_value] to
@@ -17,15 +28,15 @@ class DFRawParcerUtil
   # }
   def parse_line(line)
     parsed_line = {
-      first_value: '',
-      second_value: ''
+      key: '',
+      value: ''
     }
 
-    first_value = line.match(/\[(\w+)/)[1]
-    second_value = line.match(/(\w+)\]/)[1]
+    key = line.match(/\[(\w+)/)[1]
+    value = line.match(/(\w+)\]/)[1]
 
-    parsed_line[:first_value] = first_value
-    parsed_line[:second_value] = second_value
+    parsed_line[:key] = key
+    parsed_line[:value] = value
 
     parsed_line
   end
