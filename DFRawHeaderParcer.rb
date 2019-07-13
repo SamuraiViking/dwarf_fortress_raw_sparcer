@@ -1,17 +1,13 @@
-# mission read b_detail_plan_default.txt
-
-file = File.open('raw/objects/b_detail_plan_default.txt', 'r')
-
 # functions:
 #   all_headers
 #   header?
 #   parse_header
 #   display_header
-class DFRawSparcer
+class DFRawHeaderParcer
   # reads all headers
   # inserts super classes in hash as keys
   # inserts sub classes into hash as value to associated super class key
-  def all_headers(file)
+  def all_headers_hash(file)
     all_objects_hash = {}
 
     file.each do |line|
@@ -66,20 +62,26 @@ class DFRawSparcer
   # super_object2
   #   sub_object1
   #   sub_object2
-
-  def display_all_objects(all_objects)
-    all_objects.each do |super_class, sub_objects|
-      puts super_class
+  def all_headers_str(file)
+    all_headers_h = all_headers_hash(file)
+    all_headers_s = ''
+    all_headers_h.each do |super_class, sub_objects|
+      all_headers_s += "#{super_class.to_s}\n"
       sub_objects.each do |sub_class|
-        puts "\t#{sub_class}"
+        all_headers_s += "\t#{sub_class}\n"
       end
-      puts
+      all_headers_s += "\n"
     end
+    all_headers_s
   end
 end
 
-df_parse = DFRawSparcer.new
+file_name = 'creature_other'
+path = 'raw/objects/'
 
-all_objects = df_parse.all_headers(file)
+file = File.open("#{path}#{file_name}.txt", 'r')
 
-df_parse.display_all_objects(all_objects)
+DF_raw_header_parcer = DFRawHeaderParcer.new
+
+puts DF_raw_header_parcer.all_headers_str(file)
+puts DF_raw_header_parcer.all_headers_hash(file)
