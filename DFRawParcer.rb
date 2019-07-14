@@ -1,35 +1,44 @@
-require_relative 'DFRawParcerUtil'
+file = File.open("test.txt")
 
-class DFRawParser < DFRawParcerUtil
-  attr_reader :json, :file_length, :file, :file_lines
+file_hash = {}
+def parse_line(line)
+  parsed_line = {
+    key: '',
+    value: ''
+  }
 
-  def initialize(file_name)
-    @file = File.read(file_name)
-    @file_lines = @file.split("\n")
-    @file_length = @file_lines.length
-    @json = init_json
+  key = line.match(/\[(\w+)/)[1]
+  value = line.match(/(\w+)\]/)[1]
+
+  parsed_line[:key] = key
+  parsed_line[:value] = value
+
+  parsed_line
+end
+
+class Parser
+  def initialize
+    @index = 0
+    @file = File.read("test.txt").split("\n")
+    @file_length = @file.length
   end
 
-  def valid_line?(line)
-    !line.nil? && !empty_line?(line) && attribute?(line)
-  end
+  def parse_file(line)
+    parsed_line = parse_line(@file[@index])
+    key = parsed_line[:key]
+    value = parsed_line[:value]
 
-  def init_json(line_num = 0)
-    line = @file_lines[line_num]
-    return init_json(line_num + 1) unless valid_line?(line)
+    return { "#{key}": value } if @index == @file_length - 1
 
-    parsed_line = parse_line(line)
-    key = parsed_line[:key].to_sym
-    value = parsed_line[:value].to_sym
+    key = key.to_sym
+    value = value.to_sym
 
-    return { "#{key}": value.to_s } if line_num == @file_length - 1
-
-    json = {}
-    json[key] = { "#{value}": init_json(line_num + 1) }
-    json
+    file_hash = {}
+    file_hash[key] = { "#{value}": parse_file(@file[@index += 1]) }
+    file_hash
   end
 end
 
-body_default = DFRawParser.new('raw/objects/body_rcp.txt')
+h = Parser.new.parse_file("test.txt")
 
-puts body_default.json
+p h
